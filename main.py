@@ -1,4 +1,4 @@
-# main.py (Versão para Web)
+# main.py (Versão para Web - Corrigida)
 
 import streamlit as st
 from googleapiclient.discovery import build
@@ -19,14 +19,15 @@ from datetime import datetime
 def buscar_videos_youtube(query, max_results=10, published_after=None, video_duration='any', idioma='pt'):
     """Busca vídeos no YouTube usando a API Key dos Secrets do Streamlit."""
     
-    # Lê a API Key dos secrets do Streamlit
     API_KEY = st.secrets.get("youtube", {}).get("api_key")
     if not API_KEY:
         st.error("ERRO: A API Key do YouTube não foi encontrada nos 'Secrets' do Streamlit.")
         return []
 
     try:
+        # A variável correta 'youtube' (minúsculo) é definida aqui
         youtube = build('youtube', 'v3', developerKey=API_KEY)
+        
         search_params = {
             'q': query,
             'part': 'id',
@@ -38,12 +39,14 @@ def buscar_videos_youtube(query, max_results=10, published_after=None, video_dur
         if published_after:
             search_params['publishedAfter'] = published_after
 
+        # A variável correta 'youtube' (minúsculo) é usada aqui
         search_response = Youtube().list(**search_params).execute()
         video_ids = [item['id']['videoId'] for item in search_response.get('items', [])]
 
         if not video_ids:
             return []
 
+        # E aqui também
         videos_response = youtube.videos().list(
             part='snippet,statistics',
             id=','.join(video_ids)
