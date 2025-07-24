@@ -1,3 +1,4 @@
+
 # main.py (Versão para Web - Corrigida)
 
 import streamlit as st
@@ -25,7 +26,6 @@ def buscar_videos_youtube(query, max_results=10, published_after=None, video_dur
         return []
 
     try:
-        # A variável correta 'youtube' (minúsculo) é definida aqui
         youtube = build('youtube', 'v3', developerKey=API_KEY)
         
         search_params = {
@@ -39,14 +39,12 @@ def buscar_videos_youtube(query, max_results=10, published_after=None, video_dur
         if published_after:
             search_params['publishedAfter'] = published_after
 
-        # A variável correta 'youtube' (minúsculo) é usada aqui
-        search_response = Youtube().list(**search_params).execute()
+        search_response = youtube.search().list(**search_params).execute()
         video_ids = [item['id']['videoId'] for item in search_response.get('items', [])]
 
         if not video_ids:
             return []
 
-        # E aqui também
         videos_response = youtube.videos().list(
             part='snippet,statistics',
             id=','.join(video_ids)
